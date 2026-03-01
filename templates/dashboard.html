@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<div class="container my-5">
+
+    <!-- Welcome Section -->
+    <div class="mb-4">
+        <h2 class="font-weight-bold">Welcome, {{ user.username }}</h2>
+        <p class="text-muted">
+            Track your spending, analyze patterns, and manage your finances efficiently.
+        </p>
+    </div>
+
+    <!-- Summary Cards -->
+    <div class="row mb-4">
+        <div class="col-md-3 mb-3">
+            <div class="card shadow-sm border-0 p-4">
+                <h6 class="text-muted">Total Income</h6>
+                <h3 class="font-weight-bold">RS  {{ total_income }}</h3>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card shadow-sm border-0 p-4">
+                <h6 class="text-muted">Total Expense</h6>
+                <h3 class="font-weight-bold">RS  {{ total_expense }}</h3>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card shadow-sm border-0 p-4">
+                <h6 class="text-muted">Balance</h6>
+                <h3 class="font-weight-bold">RS  {{ balance }}</h3>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card shadow-sm border-0 p-4">
+                <h6 class="text-muted">Predicted Next Month Expense</h6>
+                <h3 class="font-weight-bold">RS  {{ predicted_expense }}</h3>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Section -->
+    <div class="row">
+
+        <!-- Monthly Expense Chart -->
+        <div class="col-lg-7 mb-4">
+            <div class="card shadow-sm border-0 p-4">
+                <h5 class="mb-3 font-weight-bold">Monthly Expense Summary</h5>
+                <p class="text-muted small">
+                    Overview of how your expenses have changed month by month.
+                </p>
+                <canvas id="monthlyChart" height="120"></canvas>
+            </div>
+        </div>
+
+        <!-- Category Chart -->
+        <div class="col-lg-5 mb-4">
+            <div class="card shadow-sm border-0 p-4">
+                <h5 class="mb-3 font-weight-bold">Category-wise Distribution</h5>
+                <p class="text-muted small">
+                    Breakdown of spending across different categories.
+                </p>
+                <canvas id="categoryChart" height="120"></canvas>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+    // Monthly Bar Chart
+    new Chart(document.getElementById('monthlyChart'), {
+        type: 'bar',
+        data: {
+            labels: {{ monthly_labels|safe }},
+            datasets: [{
+                label: 'Total Expense',
+                data: {{ monthly_totals|safe }},
+                backgroundColor: 'rgba(37, 99, 235, 0.6)',
+                borderRadius: 6
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: { legend: { display: false } },
+            scales: { y: { beginAtZero: true } }
+        }
+    });
+
+    // Category Pie Chart
+    new Chart(document.getElementById('categoryChart'), {
+        type: 'pie',
+        data: {
+            labels: {{ category_labels|safe }},
+            datasets: [{
+                data: {{ category_totals|safe }},
+                backgroundColor: [
+                    '#2563eb','#16a34a','#dc2626','#ca8a04','#9333ea','#0ea5e9','#f97316'
+                ]
+            }]
+        },
+        options: { responsive: true }
+    });
+</script>
+
+<style>
+.card { border-radius: 0.75rem; }
+</style>
+
+{% endblock %}

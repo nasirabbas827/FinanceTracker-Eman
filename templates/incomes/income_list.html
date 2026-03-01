@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+{% block title %}Income Reports{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+
+    <div class="d-flex justify-content-between mb-4">
+        <h3>Income Reports</h3>
+        <div>
+            <a href="{% url 'add_income' %}" class="btn btn-primary">Add Income</a>
+            <a href="{% url 'export_income_csv' %}" class="btn btn-success">Export CSV</a>
+        </div>
+    </div>
+
+    <!-- ================= FILTER SECTION ================= -->
+    <div class="card p-4 mb-4 shadow-sm">
+        <form method="get" class="row g-3">
+
+            <div class="col-md-2">
+                <label>Source</label>
+                <select name="source" class="form-control">
+                    <option value="">All</option>
+                    <option value="Salary">Salary</option>
+                    <option value="Business">Business</option>
+                    <option value="Freelance">Freelance</option>
+                    <option value="Investment">Investment</option>
+                    <option value="Gift">Gift</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+
+            <div class="col-md-2">
+                <label>Start Date</label>
+                <input type="date" name="start_date" class="form-control">
+            </div>
+
+            <div class="col-md-2">
+                <label>End Date</label>
+                <input type="date" name="end_date" class="form-control">
+            </div>
+
+            <div class="col-md-2">
+                <label>Min Amount</label>
+                <input type="number" name="min_amount" class="form-control">
+            </div>
+
+            <div class="col-md-2">
+                <label>Max Amount</label>
+                <input type="number" name="max_amount" class="form-control">
+            </div>
+
+            <div class="col-md-2 d-flex align-items-end">
+                <button type="submit" class="btn btn-dark w-100">Filter</button>
+            </div>
+
+        </form>
+    </div>
+
+    <!-- ================= PLOTLY GRAPH ================= -->
+    <div class="card p-4 mb-4 shadow-sm">
+        <h5 class="mb-3">Monthly Income Trend</h5>
+        <div id="incomeChart"></div>
+    </div>
+
+    <!-- ================= TABLE ================= -->
+    {% if incomes %}
+    <table class="table table-bordered table-hover">
+        <thead class="thead-dark">
+            <tr>
+                <th>Date</th>
+                <th>Amount</th>
+                <th>Source</th>
+                <th>Description</th>
+                <th width="150">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for income in incomes %}
+            <tr>
+                <td>{{ income.date }}</td>
+                <td>{{ income.amount }}</td>
+                <td>{{ income.source }}</td>
+                <td>{{ income.description }}</td>
+                <td>
+                    <a href="{% url 'edit_income' income.pk %}" class="btn btn-sm btn-warning">Edit</a>
+                    <a href="{% url 'delete_income' income.pk %}"
+                       class="btn btn-sm btn-danger"
+                       onclick="return confirm('Delete this income?');">
+                        Delete
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+        <p>No incomes found.</p>
+    {% endif %}
+
+</div>
+
+<!-- ================= PLOTLY SCRIPT ================= -->
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<script>
+    var months = {{ months|safe }};
+    var totals = {{ totals|safe }};
+
+    var data = [{
+        x: months,
+        y: totals,
+        type: 'bar'
+    }];
+
+    var layout = {
+        title: 'Monthly Income Overview',
+        xaxis: { title: 'Month' },
+        yaxis: { title: 'Total Income' }
+    };
+
+    Plotly.newPlot('incomeChart', data, layout);
+</script>
+
+{% endblock %}

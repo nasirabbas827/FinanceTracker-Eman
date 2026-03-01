@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+{% block title %}Expense Reports{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+
+    <div class="d-flex justify-content-between mb-4">
+        <h3>Expense Reports</h3>
+        <div>
+            <a href="{% url 'add_expense' %}" class="btn btn-primary">Add Expense</a>
+            <a href="{% url 'export_expense_csv' %}" class="btn btn-success">Export CSV</a>
+        </div>
+    </div>
+
+    <!-- ================= FILTER SECTION ================= -->
+    <div class="card p-4 mb-4 shadow-sm">
+        <form method="get" class="row g-3">
+
+            <div class="col-md-2">
+                <label>Category</label>
+                <select name="category" class="form-control">
+                    <option value="">All</option>
+                    <option value="Food">Food</option>
+                    <option value="Transport">Transport</option>
+                    <option value="Bills">Bills</option>
+                    <option value="Shopping">Shopping</option>
+                    <option value="Health">Health</option>
+                    <option value="Education">Education</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+
+            <div class="col-md-2">
+                <label>Start Date</label>
+                <input type="date" name="start_date" class="form-control">
+            </div>
+
+            <div class="col-md-2">
+                <label>End Date</label>
+                <input type="date" name="end_date" class="form-control">
+            </div>
+
+            <div class="col-md-2">
+                <label>Min Amount</label>
+                <input type="number" name="min_amount" class="form-control">
+            </div>
+
+            <div class="col-md-2">
+                <label>Max Amount</label>
+                <input type="number" name="max_amount" class="form-control">
+            </div>
+
+            <div class="col-md-2 d-flex align-items-end">
+                <button type="submit" class="btn btn-dark w-100">Filter</button>
+            </div>
+
+        </form>
+    </div>
+
+    <!-- ================= PLOTLY GRAPH ================= -->
+    <div class="card p-4 mb-4 shadow-sm">
+        <h5 class="mb-3">Monthly Expense Trend</h5>
+        <div id="expenseChart"></div>
+    </div>
+
+    <!-- ================= TABLE ================= -->
+    {% if expenses %}
+    <table class="table table-bordered table-hover">
+        <thead class="thead-dark">
+            <tr>
+                <th>Date</th>
+                <th>Amount</th>
+                <th>Category</th>
+                <th>Description</th>
+                <th width="150">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for expense in expenses %}
+            <tr>
+                <td>{{ expense.date }}</td>
+                <td>{{ expense.amount }}</td>
+                <td>{{ expense.category }}</td>
+                <td>{{ expense.description }}</td>
+                <td>
+                    <a href="{% url 'edit_expense' expense.pk %}" class="btn btn-sm btn-warning">Edit</a>
+                    <a href="{% url 'delete_expense' expense.pk %}"
+                       class="btn btn-sm btn-danger"
+                       onclick="return confirm('Delete this expense?');">
+                        Delete
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+        <p>No expenses found.</p>
+    {% endif %}
+
+</div>
+
+<!-- ================= PLOTLY SCRIPT ================= -->
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<script>
+    var months = {{ months|safe }};
+    var totals = {{ totals|safe }};
+    var average = {{ average }};
+
+    var colors = totals.map(function(value){
+        return value > average ? 'red' : 'blue';
+    });
+
+    var data = [{
+        x: months,
+        y: totals,
+        type: 'bar',
+        marker: {color: colors}
+    }];
+
+    var layout = {
+        title: 'Monthly Expense Overview (Red = Overspending)',
+        xaxis: { title: 'Month' },
+        yaxis: { title: 'Total Expense' }
+    };
+
+    Plotly.newPlot('expenseChart', data, layout);
+</script>
+
+{% endblock %}

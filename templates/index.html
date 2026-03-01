@@ -1,0 +1,190 @@
+{% extends "base.html" %}
+{% block title %}Smart Expense Tracker{% endblock %}
+
+{% block content %}
+
+<!-- HERO SECTION -->
+<div class="jumbotron jumbotron-fluid text-white mb-0"
+     style="background: linear-gradient(rgba(15, 23, 42, 0.85), rgba(15, 23, 42, 0.85)),
+     url('https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&w=1600&q=80')
+     center/cover no-repeat; padding: 7rem 0; border-radius: 0;">
+
+    <div class="container text-center">
+        <h1 class="display-4 font-weight-bold mb-3">
+            Smart Personal Finance Tracker
+        </h1>
+
+        <p class="lead mb-4 mx-auto" style="max-width: 800px;">
+            Take control of your money with intelligent expense tracking,
+            monthly summaries, and category-based insights — all in one clean dashboard.
+        </p>
+
+        {% if request.session.user_id %}
+            <div class="d-flex justify-content-center align-items-center">
+                <span class="mr-4 lead text-light">
+                    Welcome back, <strong>{{ request.session.username }}</strong>
+                </span>
+                <a href="{% url 'dashboard' %}"
+                   class="btn btn-info btn-lg px-5 shadow font-weight-bold">
+                    Go to Dashboard
+                </a>
+            </div>
+        {% else %}
+            <div class="mt-4">
+                <a href="{% url 'login' %}"
+                   class="btn btn-info btn-lg px-5 mr-3 shadow font-weight-bold">
+                    Login
+                </a>
+                <a href="{% url 'register' %}"
+                   class="btn btn-outline-light btn-lg px-5 shadow">
+                    Create Account
+                </a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+
+<!-- FEATURES SECTION -->
+<div class="bg-white py-5 border-bottom">
+    <div class="container text-center">
+        <h2 class="font-weight-bold mb-5">Core Features</h2>
+
+        <div class="row">
+
+            <div class="col-md-4">
+                <div class="p-4">
+                    <i class="fas fa-plus-circle fa-3x text-primary mb-3"></i>
+                    <h5 class="font-weight-bold">Easy Expense Entry</h5>
+                    <p class="text-muted small">
+                        Add expenses with date, amount, category, and optional notes
+                        in just a few clicks.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="p-4">
+                    <i class="fas fa-chart-bar fa-3x text-primary mb-3"></i>
+                    <h5 class="font-weight-bold">Monthly Analytics</h5>
+                    <p class="text-muted small">
+                        Visualize your monthly spending trends and understand
+                        how your expenses evolve over time.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="p-4">
+                    <i class="fas fa-chart-pie fa-3x text-primary mb-3"></i>
+                    <h5 class="font-weight-bold">Category Insights</h5>
+                    <p class="text-muted small">
+                        See where your money goes with automatic category-wise
+                        distribution charts.
+                    </p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<!-- WHY USE SECTION -->
+<div class="container my-5">
+    <div class="row align-items-center">
+
+        <div class="col-lg-6 mb-4 mb-lg-0">
+            <h2 class="font-weight-bold mb-4">Why Use Our Expense Tracker?</h2>
+            <p class="text-secondary">
+                Managing finances shouldn’t be complicated. Our system provides
+                a structured and clear way to monitor spending habits
+                without overwhelming you.
+            </p>
+
+            <ul class="list-unstyled">
+                <li class="mb-3">
+                    <i class="fas fa-check text-success mr-2"></i>
+                    Improve financial awareness
+                </li>
+                <li class="mb-3">
+                    <i class="fas fa-check text-success mr-2"></i>
+                    Identify unnecessary spending
+                </li>
+                <li class="mb-3">
+                    <i class="fas fa-check text-success mr-2"></i>
+                    Build better budgeting habits
+                </li>
+            </ul>
+
+            {% if not request.session.user_id %}
+                <a href="{% url 'register' %}" class="btn btn-primary mt-3">
+                    Start Tracking for Free
+                </a>
+            {% endif %}
+        </div>
+
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-lg" style="border-radius: 20px; overflow: hidden;">
+                <div class="card-header bg-primary text-white py-3 border-0">
+                    <h5 class="mb-0">Financial Awareness Impact</h5>
+                </div>
+                <div class="card-body p-5 text-center">
+
+                    <h1 class="text-primary font-weight-bold">Better Control</h1>
+                    <p class="text-muted small">
+                        Users who consistently track expenses gain clearer insight
+                        into their spending behavior and make smarter decisions.
+                    </p>
+
+                    <div class="progress mt-4" style="height: 10px;">
+                        <div class="progress-bar bg-info" style="width: 85%"></div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+<!-- FOOTER CTA -->
+<div class="bg-dark text-white text-center py-5">
+    <div class="container">
+        <h3 class="font-weight-bold mb-3">
+            Ready to Take Control of Your Finances?
+        </h3>
+
+        {% if not request.session.user_id %}
+            <a href="{% url 'register' %}" class="btn btn-info btn-lg px-5">
+                Create Free Account
+            </a>
+        {% else %}
+            <a href="{% url 'dashboard' %}" class="btn btn-info btn-lg px-5">
+                Go to Dashboard
+            </a>
+        {% endif %}
+    </div>
+</div>
+
+
+<style>
+    .jumbotron h1 {
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
+
+    .btn-lg {
+        border-radius: 50px;
+    }
+
+    .card {
+        transition: transform 0.3s ease;
+    }
+
+    .card:hover {
+        transform: translateY(-8px);
+    }
+</style>
+
+{% endblock %}

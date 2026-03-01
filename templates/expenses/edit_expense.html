@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Edit Expense{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-5 col-md-8 px-0">
+            <div class="card border-0 shadow-lg p-4 rounded-right">
+                <div class="card-body">
+
+                    <div class="text-center mb-4">
+                        <h3 class="font-weight-bold">Edit Expense</h3>
+                    </div>
+
+                    <form method="post" class="registration-form">
+                        {% csrf_token %}
+                        {% for field in form %}
+                        <div class="form-group mb-3">
+                            <label class="small font-weight-bold text-dark">
+                                {{ field.label }}
+                            </label>
+                            {{ field }}
+                        </div>
+                        {% endfor %}
+
+                        <button type="submit" class="btn btn-success btn-block btn-lg shadow-sm">
+                            Update Expense
+                        </button>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
